@@ -3,7 +3,7 @@ import styles from './ArrowButton.module.scss';
 import clsx from 'clsx';
 
 /** Функция для обработки открытия/закрытия формы */
-export type OnClick = () => void;
+export type OnClick = (isOpen: boolean) => void;
 export type ArrowButtonProps = {
 	isOpen?: boolean;
 	onClick?: OnClick;
@@ -11,7 +11,7 @@ export type ArrowButtonProps = {
 
 export const ArrowButton = ({ isOpen, onClick }: ArrowButtonProps) => {
 	const handleClick = () => {
-		if (onClick) onClick();
+		if (onClick) onClick(!isOpen);
 	};
 	return (
 		/* Не забываем указаывать role и aria-label атрибуты для интерактивных элементов */

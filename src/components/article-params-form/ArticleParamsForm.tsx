@@ -18,7 +18,7 @@ import {
 } from 'src/constants/articleProps';
 import { RadioGroup } from 'components/radio-group';
 import { Separator } from 'components/separator';
-import { useOutsideClickClose } from '../select/hooks/useOutsideClickClose';
+import { useClose } from '../hooks/useClose';
 
 /**
  * Тип пропсов компонента ArticleParamsForm
@@ -59,11 +59,10 @@ export const ArticleParamsForm = ({
 	const rootRef = useRef<HTMLDivElement | null>(null); // для хука Ref
 
 	// запуск пользовательского хука для отлавливания клика за пределами сайдбара
-	useOutsideClickClose({
+	useClose({
 		isOpen,
+		onClose: () => setOpen(false),
 		rootRef,
-		onChange: setOpen,
-		eventName: 'mousedown', // устанавливаем другое название события, чтобы не конфликтовало с компонентой Select
 	});
 
 	/**
@@ -95,16 +94,10 @@ export const ArticleParamsForm = ({
 		onSet(defaultArticleState);
 	};
 
-	/**
-	 * Функция переключения открытости сайдбара
-	 */
-	const toggleOpen = (): void => setOpen(!isOpen);
-
 	return (
 		<div ref={rootRef}>
-			{' '}
 			{/* сделали div, чтобы работал клик за пределами модального окна */}
-			<ArrowButton onClick={toggleOpen} isOpen={isOpen} />
+			<ArrowButton onClick={setOpen} isOpen={isOpen} />
 			<aside
 				className={clsx(styles.container, { [styles.container_open]: isOpen })}>
 				<form
