@@ -3,7 +3,7 @@ import styles from './ArticleParamsForm.module.scss';
 import clsx from 'clsx';
 import { ArrowButton } from 'components/arrow-button';
 import { Button } from 'components/button';
-import { useState, useRef, SyntheticEvent } from 'react';
+import { useState, useRef, FormEvent } from 'react';
 import { Text } from 'components/text';
 import { Select } from 'components/select';
 import {
@@ -37,7 +37,7 @@ export const ArticleParamsForm = ({
 	onSet,
 	currentState,
 }: ArticleParamsFormProps) => {
-	const [isOpen, setOpen] = useState(false); // Открытие-закрытие формы
+	const [isMenuOpen, setMenuOpen] = useState(false); // Открытие-закрытие формы
 
 	// для полей формы
 	const [fontFamilyOption, setFontFamilyOption] = useState<OptionType>(
@@ -60,16 +60,16 @@ export const ArticleParamsForm = ({
 
 	// запуск пользовательского хука для отлавливания клика за пределами сайдбара
 	useClose({
-		isOpen,
-		onClose: () => setOpen(false),
+		isOpen: isMenuOpen,
+		onClose: () => setMenuOpen(false),
 		rootRef,
 	});
 
 	/**
 	 * Обработка нажатия кнопки <Применить>
-	 * @param e - SyntheticEvent - стандартный тип переменной обработчика события
+	 * @param e - FormEvent<HTMLFormElement> - стандартный тип переменной обработчика события
 	 */
-	const handleSubmit = (e: SyntheticEvent): void => {
+	const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
 		e.preventDefault();
 		onSet({
 			fontFamilyOption,
@@ -82,9 +82,9 @@ export const ArticleParamsForm = ({
 
 	/**
 	 * Обработка нажатия кнопки <Сбросить>
-	 * @param e - SyntheticEvent - стандартный тип переменной обработчика события
+	 * @param e - FormEvent<HTMLFormElement> - стандартный тип переменной обработчика события
 	 */
-	const handleReset = (e: SyntheticEvent): void => {
+	const handleReset = (e: FormEvent<HTMLFormElement>): void => {
 		e.preventDefault();
 		setFontFamilyOption(defaultArticleState.fontFamilyOption);
 		setFontSizeOption(defaultArticleState.fontSizeOption);
@@ -97,9 +97,11 @@ export const ArticleParamsForm = ({
 	return (
 		<div ref={rootRef}>
 			{/* сделали div, чтобы работал клик за пределами модального окна */}
-			<ArrowButton onClick={setOpen} isOpen={isOpen} />
+			<ArrowButton onClick={setMenuOpen} isOpen={isMenuOpen} />
 			<aside
-				className={clsx(styles.container, { [styles.container_open]: isOpen })}>
+				className={clsx(styles.container, {
+					[styles.container_open]: isMenuOpen,
+				})}>
 				<form
 					className={styles.form}
 					onSubmit={handleSubmit}
@@ -111,29 +113,34 @@ export const ArticleParamsForm = ({
 						title='Шрифты'
 						options={fontFamilyOptions}
 						selected={fontFamilyOption}
-						onChange={setFontFamilyOption}></Select>
+						onChange={setFontFamilyOption}
+					/>
 					<RadioGroup
 						options={fontSizeOptions}
 						name='FontSize'
 						title='Размер шрифта'
 						selected={fontSizeOption}
-						onChange={setFontSizeOption}></RadioGroup>
+						onChange={setFontSizeOption}
+					/>
 					<Select
 						title='Цвет шрифта'
 						options={fontColors}
 						selected={fontColor}
-						onChange={setFontColor}></Select>
+						onChange={setFontColor}
+					/>
 					<Separator />
 					<Select
 						title='Цвет фона'
 						options={backgroundColors}
 						selected={backgroundColor}
-						onChange={setBackgroundColor}></Select>
+						onChange={setBackgroundColor}
+					/>
 					<Select
 						title='Ширина контента'
 						options={contentWidthArr}
 						selected={contentWidth}
-						onChange={setContentWidth}></Select>
+						onChange={setContentWidth}
+					/>
 					<div className={styles.bottomContainer}>
 						<Button title='Сбросить' type='reset' />
 						<Button title='Применить' type='submit' />
